@@ -41,7 +41,7 @@ skin_df['cell_type_idx'] = pd.Categorical(skin_df['cell_type']).codes
 
 # Shrink dataset
 print(f"Original Size: {skin_df.shape}")
-skin_df = skin_df.sample(frac=0.1) # shuffle the dataset
+#skin_df = skin_df.sample(frac=0.05) # shuffle the dataset
 print(f"Shrunk Size: {skin_df.shape}")
 
 # Fill missing values in 'age'
@@ -129,13 +129,16 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training Loop
-epochs = 5
-batch_size = 128
+epochs = 25
+batch_size = 512
 for epoch in range(epochs):
     model.train()
     permutation = torch.randperm(x_train.size()[0])
     
     running_loss = 0.0
+    correct_train = 0
+    total_train = 0
+
     for i in range(0, x_train.size()[0], batch_size):
         indices = permutation[i:i + batch_size]
         batch_x, batch_y = x_train[indices], y_train[indices]
@@ -147,17 +150,48 @@ for epoch in range(epochs):
         optimizer.step()
         
         running_loss += loss.item()
+
+        # Calculate training accuracy
+        _, predicted = torch.max(outputs, 1)
+        _, labels = torch.max(batch_y, 1)
+        correct_train += (predicted == labels).sum().item()
+        total_train += labels.size(0)
     
-    print(f"Epoch {epoch+1}/{epochs}, Loss: {running_loss / x_train.size()[0]}")
+    train_accuracy = 100 * correct_train / total_train
+    print(f"Epoch {epoch+1}/{epochs}, Loss: {running_loss / len(x_train):.4f}, Training Accuracy: {train_accuracy:.2f}%")
+    
+    # Validation accuracy
+    model.eval()
+    correct_val = 0
+    total_val = 0
+    with torch.no_grad():
+        outputs = model(x_validate)
+        _, predicted = torch.max(outputs, 1)
+        _, labels = torch.max(y_validate, 1)
+        correct_val += (predicted == labels).sum().item()
+        total_val += labels.size(0)
+    
+    val_accuracy = 100 * correct_val / total_val
+    print(f'Epoch {epoch+1}/{epochs}, Validation Accuracy: {val_accuracy:.2f}%')
 
-# Validation Accuracy
+print('Finished Training')
+
+# Testing the model on the test dataset
+print('Evaluating on test set...')
 model.eval()
+correct_test = 0
+total_test = 0
 with torch.no_grad():
-    outputs = model(x_validate)
+    outputs = model(x_test)
     _, predicted = torch.max(outputs, 1)
-    _, labels = torch.max(y_validate, 1)
-    accuracy = (predicted == labels).sum().item() / labels.size(0)
-    print(f'Validation Accuracy: {accuracy * 100:.2f}%')
+    _, labels = torch.max(y_test, 1)
+    correct_test += (predicted == labels).sum().item()
+    total_test += labels.size(0)
 
-# just weights
-torch.save(model.state_dict(), 'model_v3.pth')
+test_accuracy = 100 * correct_test / total_test
+print(f'Test Accuracy: {test_accuracy:.2f}%')
+
+# Save the model weights with test accuracy in the filename
+model_filename = f'../weights/model_v1_acc_{test_accuracy:.0f}.pth'
+print(f'Saving model as {model_filename}...')
+torch.save(model.state_dict(), model_filename)

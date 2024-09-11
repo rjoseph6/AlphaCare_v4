@@ -1,6 +1,8 @@
 # Meeting Notes
 
-## 09-05-24
+These are all the notes taken during the meetings with the advisor.
+
+# 09-05-24
 
 First meeting of the semester. Our next meeting is scheduled for next Thursday (09-12-24) same time, 10 AM. Goal for next meeting is to have a working barebone prototype. 
 - User can upload image
@@ -18,3 +20,8 @@ The second deadline we discussed having is a finalized fully trained model. We h
 
 We also discussed Hierarchial Neural Networks. I made the case that a simple massive NN could do a better job than an hierarchial NN because it will be able to capture more complex relationships directly, without the need for redefined hierarchies. I compared it to the Tesla Full Self Driving stack. Tesla turned theer 100 ML models into simply just one massive model that takes photons in (images) and outputs only steering and pedal controls. Check out this super unknown talk by a former Tesla AI engineer where he explains the idea. 
 https://youtu.be/OKDRsVXv49A?si=bDnlsWGepy4a2QO4&t=918 
+
+# 0 9 - 1 2 - 2 4
+- had to switch from tensorflow to pytorch because of the issues loading pretrained models
+- deciding on whether to create static or dynamic web app
+- need to figure out how to display heatmap using pytorch model

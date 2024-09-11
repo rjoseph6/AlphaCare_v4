@@ -128,6 +128,7 @@ model.load_state_dict(torch.load('model_v3.pth', weights_only=True))
 # Set the model to evaluation mode
 #model.eval()
 print("Model loaded successfully!")
+
 # Function to perform Monte Carlo Dropout inference
 def mc_dropout_inference(model, x, num_samples=50):
     model.train()  # Keep dropout layers active (necessary for Monte Carlo Dropout)
@@ -173,4 +174,3 @@ with torch.no_grad():
     predicted_class_uncertainty = uncertainty[0][predicted_class_idx].item()
     print(f"Uncertainty (variance) for Predicted Class: {predicted_class_uncertainty:.4f}")
     print("----------------------------------------------------------")
-

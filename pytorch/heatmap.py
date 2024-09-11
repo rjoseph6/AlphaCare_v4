@@ -1,3 +1,4 @@
+```
 import numpy as np
 import pandas as pd
 import os
@@ -172,4 +173,4 @@ plt.imshow(test_sample[0].permute(1, 2, 0).cpu())
 plt.imshow(heatmap, cmap='jet', alpha=0.5)  # Overlay heatmap on the image
 plt.colorbar()
 plt.title(f'Heatmap for Predicted Class {target_class}')
-plt.show()
+plt.show()```
