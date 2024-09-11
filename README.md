@@ -1,13 +1,10 @@
 # ReadME
 
 
-![](frontend/v1_frontend.png) 
-
-## Project Structure
 ```
 backend
-    ├── main.py                     # model inference
-    ├── model_3.keras               # test model
+    ├── app.py                     # inference
+    ├── model_4.keras               # model weights
     ├── requirements.txt
 frontend
     ├── public
@@ -16,10 +13,17 @@ frontend
     │   ├── App.css 
     │   ├── App.js
     │   ├── App.test.js
-    │   ├── components
-    │   │   ├── ImageUploader.js
-    │   │   ├── Results.js
     │   └── index.js
+    ├── package.json
+    ├── package-lock.json
+mnist
+    ├── heatmap.ipynb               
+    ├── mnist_train.ipynb           
+    ├── uncertainty_quantification.ipynb
+pytorch
+    ├── ...                     
+ui
+    ├── ...                     
 ```
 
 # How To Run 
@@ -31,18 +35,18 @@ frontend
 cd Downloads 
 ```
 ```bash
-git clone https://github.com/rjoseph6/alphacare_v3.git
+git clone https://github.com/rjoseph6/AlphaCare_v4.git
 ```
 We are downloading the project from the repository.
 
 2. Run these commands to start the frontend:
 
 ```bash
-cd alphacare_v3/frontend
+cd AlphaCare_v4/frontend
 ```
 
 ```bash
-cd frontend/
+npm install
 ```
 
 ```bash
@@ -51,40 +55,38 @@ npm start
 
 4. A browser window should open with the frontend running. 
 
-![ui](frontend/v1_frontend2.png)
+![ui](ui/v1_frontend2.png)
 
-5. In the second terminal, run these commands to start the backend
+5. Start a NEW second terminal
+
+6. Run these commands in the new terminal
 
 ```bash
 # go into app
-cd Downloads/alphacare_v3/backend # YOUR PATH
-
-# create virtual environment
+cd Downloads/AlphaCare_v4/backend 
+```
+```bash
 python3 -m venv venv
-
-# activate virtual environment
+```
+```bash
 source venv/bin/activate
-
-# install requirements
+```
+```bash
 pip3 install -r requirements.txt
-
-# run python script
+```
+```bash
 python3 app.py
-
 ```
 
 6. The frontend (browser) should now be connected to the backend (python script). 
 
-7. Input an image of a skin disease (Melanoma/Vascular Lesion) and click the "Submit" button. The model will predict the image and display the results.
+7. Go to the browser that was initially opened. Input an image of a skin disease (Melanoma/Vascular Lesion) and click the "Submit" button. The model will predict the image and display the results.
 
-![ui](frontend/v1_frontend.png)
+![ui](ui/v1_frontend.png)
 
+8. More detailed output of the model can be seen in the terminal where the backend is running.
 
-# Next Meeting
-
-TODO:
-- [ ] Add a loading spinner
-- [ ] Add a button to clear the image
+![](ui/backend_terminal.png)
 
 # UI Designs
 
@@ -105,40 +107,8 @@ Figma: https://www.figma.com/design/NdtFBlTj6g0E0xhGH18msF/SearchGPT?node-id=0-1
 # Frontend 
 Using React 
 
-```bash
-# ---- TERMINAL #1 ----
-
-# go into react app 
-cd desktop/Masters_Project/skin-cancer-detector
-
-# run react app
-npm start
-```
-
 # Backend
 Previously I used the FastAPI to create API Layer. I switched to Flask for the backend due to the ease of use. 
-
-```bash
-# ---- TERMINAL #2 ----
-
-# go into app
-cd desktop/alphacare_v3/backend
-
-# create virtual environment
-python3 -m venv venv
-# checking version
-# python3 --version
-
-# activate virtual environment
-source venv/bin/activate
-
-# install requirements
-pip3 install -r requirements.txt
-
-# run python script
-python3 app.py
-
-```
 
 # Models
 ## Testing Model 

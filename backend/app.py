@@ -66,13 +66,13 @@ def predict():
     # Round the uncertainty to 3 decimal places
     uncertainty = round(uncertainty * 100, 2)
 
-    print("\n-----------------------------------------")
+    print("\n------------------ Model Output -----------------------")
     # Print debugging info for backend console
-    #print(f"Mean Prediction: {mean_prediction}")
-    #print(f"Variance (Uncertainty): {variance_prediction}")
-    #print(f"Predicted Class: {predicted_class}")
+    print(f"Mean Prediction: {mean_prediction}")
+    print(f"Variance (Uncertainty): {variance_prediction}")
+    print(f"Predicted Class: {predicted_class}")
     print(f"Prediction: {predicted_class_name}")
-    #print(f"Class Probabilities: {class_probabilities}")
+    print(f"Class Probabilities: {class_probabilities}")
     print(f"Uncertainty for {predicted_class_name}: {uncertainty}%")
     print("-----------------------------------------\n")
 
