@@ -39,6 +39,15 @@ git clone https://github.com/rjoseph6/AlphaCare_v4.git
 ```
 We are downloading the project from the repository.
 
+MAC
+```
+curl -o test_img.jpg "https://uvderm.com/wp-content/uploads/2023/03/Actinic-Keratosis.jpeg"
+```
+WINDOWS
+```
+wget "https://uvderm.com/wp-content/uploads/2023/03/Actinic-Keratosis.jpeg" -O test_img.jpg
+```
+
 2. Run these commands to start the frontend:
 
 ```bash
@@ -62,7 +71,6 @@ npm start
 6. Run these commands in the new terminal
 
 ```bash
-# go into app
 cd Downloads/AlphaCare_v4/backend 
 ```
 ```bash
@@ -80,11 +88,17 @@ python3 app.py
 
 6. The frontend (browser) should now be connected to the backend (python script). 
 
-7. Go to the browser that was initially opened. Input an image of a skin disease (Melanoma/Vascular Lesion) and click the "Submit" button. The model will predict the image and display the results.
+7. Go to the browser that was initially opened. Click on "Choose File". In Downloads Folder you should see:
+```
+test_img.jpg
+```
+![](ui/downloads.png)
+
+8. Click the "Submit" button. The model will predict the image and display the results.
 
 ![ui](ui/v1_frontend.png)
 
-8. More detailed output of the model can be seen in the terminal where the backend is running.
+9. More detailed output of the model can be seen in the terminal where the backend is running.
 
 ![](ui/backend_terminal.png)
 
