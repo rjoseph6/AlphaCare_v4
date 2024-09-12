@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 function App() {
-  // State for storing the uploaded file, image preview, prediction result, probabilities, and uncertainty
+  // State for storing the uploaded file, image preview, prediction result, probabilities, heatmap URL, and uncertainty
   const [file, setFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [result, setResult] = useState('');
   const [probabilities, setProbabilities] = useState([]);
-  const [uncertainty, setUncertainty] = useState(null); // Add state for uncertainty
+  const [uncertainty, setUncertainty] = useState(null);
+  const [heatmapUrl, setHeatmapUrl] = useState(''); // State for storing heatmap URL
 
   // Handle file upload and preview
   const handleFileChange = (event) => {
-    const file = event.target.files[0]; // Get the file
+    const file = event.target.files[0];
     setFile(file); // Store the file
 
     // Create image preview URL
@@ -33,21 +34,20 @@ function App() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      const data = response.data; // Get response data
+      const data = response.data;
       setResult(`Predicted Disease: ${data.disease_name}\nClass Index: ${data.class_index}`);
       setUncertainty(data.uncertainty); // Set uncertainty state from the response
-
-      // Store probabilities for bar chart
-      setProbabilities(Object.entries(data.class_probabilities));
+      setProbabilities(Object.entries(data.class_probabilities)); // Store probabilities
+      setHeatmapUrl(`http://localhost:5000${data.heatmap_url}`); // Set heatmap URL
     } catch (error) {
       console.error('Error:', error);
-      setResult('Error occurred while predicting'); // Error handling
+      setResult('Error occurred while predicting');
     }
   };
 
   return (
-    <div className="App" style={{ height: '100vh', padding: '20px', backgroundColor: '#f4f4f4' }}> {/* Main container with background color */}
-      <h1 style={{ color: 'black' }}>Image Classifier</h1> {/* Page title */}
+    <div className="App" style={{ height: '100vh', padding: '20px', backgroundColor: '#f4f4f4' }}>
+      <h1 style={{ color: 'black' }}>Image Classifier</h1>
 
       {/* File upload and button */}
       <input type="file" onChange={handleFileChange} />
@@ -58,9 +58,9 @@ function App() {
         
         {/* Image Preview Section */}
         {imagePreviewUrl && (
-          <div style={{ width: '50%', padding: '20px' }}> {/* 50% width */}
+          <div style={{ width: '50%', padding: '20px' }}>
             <h3 style={{ color: 'black' }}>Uploaded Image</h3>
-            <div style={{ width: '100%', height: '100%', borderRadius: '20px', overflow: 'hidden' }}> {/* Rounded corners */}
+            <div style={{ width: '100%', height: '100%', borderRadius: '20px', overflow: 'hidden' }}>
               <img 
                 src={imagePreviewUrl} 
                 alt="Uploaded Preview" 
@@ -71,42 +71,38 @@ function App() {
         )}
 
         {/* Bar Chart Section */}
-        <div style={{ width: '50%', paddingLeft: '10px' }}> {/* 50% width */}
+        <div style={{ width: '50%', paddingLeft: '10px' }}>
           {uncertainty !== null && (
             <div style={{
-              backgroundColor: '#282828',  // Black background for uncertainty box
-              borderRadius: '20px',  // Rounded corners
+              backgroundColor: '#282828',
+              borderRadius: '20px',
               padding: '20px',
-              color: 'white',  // White text for uncertainty box
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',  // Light shadow
-              marginBottom: '20px'  // Margin below the uncertainty box
+              color: 'white',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              marginBottom: '20px'
             }}>
-              <h3>Uncertainty Quantification</h3> {/* Title */}
-              <p style={{ fontSize: '18px', fontWeight: 'bold' }}>Uncertainty: {uncertainty}%</p> {/* Display uncertainty value */}
+              <h3>Uncertainty Quantification</h3>
+              <p style={{ fontSize: '18px', fontWeight: 'bold' }}>Uncertainty: {uncertainty}%</p>
             </div>
           )}
 
           {probabilities.length > 0 && (
             <div style={{
-              backgroundColor: '#282828',  // Black background for bar chart box
-              borderRadius: '20px',  // Rounded corners for the box
+              backgroundColor: '#282828',
+              borderRadius: '20px',
               padding: '20px',
-              color: 'white',  // White text for the chart
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'  // Light shadow
+              color: 'white',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
             }}>
-              <h3>Class Probability Distribution</h3> {/* Title for bar chart */}
+              <h3>Class Probability Distribution</h3>
 
-              {/* Map through probabilities and display bars */}
               {probabilities.map(([disease, prob], index) => (
                 <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                  {/* Disease class name */}
                   <div style={{ minWidth: '150px', textAlign: 'right', marginRight: '10px' }}>{disease}</div>
-
-                  {/* Probability bar */}
                   <div style={{
                     height: '10px',
-                    width: `${prob * 100}%`,  // Bar width based on probability
-                    backgroundColor: prob === Math.max(...probabilities.map(([_, p]) => p)) ? '#C6C7F8' : '#3E3E3E',  // Highlight max bar
+                    width: `${prob * 100}%`,
+                    backgroundColor: prob === Math.max(...probabilities.map(([_, p]) => p)) ? '#C6C7F8' : '#3E3E3E',
                     borderRadius: '10px',
                     paddingRight: '10px',
                     display: 'flex',
@@ -120,6 +116,18 @@ function App() {
           )}
         </div>
       </div>
+
+      {/* Heatmap Section */}
+      {heatmapUrl && (
+        <div style={{ marginTop: '80px', width: '100%', textAlign: 'center' }}>
+          <h3>Heatmap</h3>
+          <img 
+            src={heatmapUrl} 
+            alt="Prediction Heatmap"  
+            style={{ width: '100%', borderRadius: '20px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }} 
+          />
+        </div>
+      )}
     </div>
   );
 }

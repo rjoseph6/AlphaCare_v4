@@ -4,3 +4,5 @@ keras
 flask
 flask_cors
 matplotlib
+torch
+opencv-python

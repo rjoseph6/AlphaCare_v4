@@ -138,6 +138,8 @@ print("\n----------------------- Heatmap Generation -----------------------\n")
 # Perform Monte Carlo Dropout Inference on one test sample (e.g., the first sample)
 test_sample = x_validate[0].unsqueeze(0)  # Select the first test sample and add a batch dimension
 print(f"Test sample shape: {test_sample.shape}")
+print(f"Test sample data type: {test_sample.dtype}")
+print(f"Test sample: {test_sample}")
 
 class SaveFeatures():
     features = None
@@ -207,7 +209,7 @@ ax[0].axis('off')
 ax[0].set_title("Original Image")
 
 # Adjust transparency and colormap for better visualization
-alpha_value = 0.4
+alpha_value = 0.5
   # Lower transparency for a better overlay
 ax[1].imshow(original_image)
 ax[1].imshow(cam_overlay, alpha=alpha_value, cmap='viridis')  # Try different colormaps like 'plasma' or 'viridis'

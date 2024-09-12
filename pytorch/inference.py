@@ -123,11 +123,13 @@ class SimpleCNN(nn.Module):
 
 # Initialize the model architecture
 model = SimpleCNN(num_classes=num_classes).to(device)
-# Load the state_dict into the model
-model.load_state_dict(torch.load('model_v3.pth', weights_only=True))
+# Load the trained model weights
+model_file_path = '../weights/model_v1_acc_73.pth'
+#model_file_path = '../weights/model_v3.pth'
+model.load_state_dict(torch.load(model_file_path, weights_only=True))
 # Set the model to evaluation mode
-#model.eval()
-print("Model loaded successfully!")
+model.eval()
+print(f"Model loaded successfully from {model_file_path}")
 
 # Function to perform Monte Carlo Dropout inference
 def mc_dropout_inference(model, x, num_samples=50):
@@ -149,11 +151,13 @@ class_names = list(lesion_type_dict.values())
 
 # Perform Monte Carlo Dropout Inference on one test sample (e.g., the first sample)
 test_sample = x_validate[0].unsqueeze(0)  # Select the first test sample and add a batch dimension
+print(f"Test Sample Shape: {test_sample.shape}")
 
 with torch.no_grad():
     
     # Perform Monte Carlo Dropout Inference on the selected test sample
     mean_output, uncertainty = mc_dropout_inference(model, test_sample, num_samples=50)
+    print(f"Initial Uncertainty : {uncertainty}")
 
     # Get the predicted class index for the sample
     predicted_class_idx = torch.argmax(mean_output, dim=1).item()
@@ -168,9 +172,11 @@ with torch.no_grad():
     # Print predicted class and its corresponding probability
     predicted_class_probability = mean_output[0][predicted_class_idx].item()
     print("----------------------------------------------------------")
+    print(f"Uncertainty : {uncertainty}")
     print(f"Predicted Class: {predicted_class_name} (Class Index: {predicted_class_idx})")
     print(f"Predicted Class Probability: {predicted_class_probability:.4f}")
     # Print the uncertainty (variance) for the predicted class
     predicted_class_uncertainty = uncertainty[0][predicted_class_idx].item()
-    print(f"Uncertainty (variance) for Predicted Class: {predicted_class_uncertainty:.4f}")
+    predicted_class_uncertainty= predicted_class_uncertainty * 100
+    print(f"Uncertainty (variance) for Predicted Class: {predicted_class_uncertainty:.4f}%")
     print("----------------------------------------------------------")
