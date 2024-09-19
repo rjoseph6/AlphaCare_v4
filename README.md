@@ -53,6 +53,7 @@ Detailed discussion in the UI.md file
 
 ![ui](ui/ui_v2.png)
 
+
 Figma: https://www.figma.com/design/NdtFBlTj6g0E0xhGH18msF/SearchGPT?node-id=0-1&node-type=CANVAS&t=kYT1Qnh3UBI5Y6Kd-0 
 
 

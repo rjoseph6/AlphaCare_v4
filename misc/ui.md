@@ -1,31 +1,36 @@
 # User Interface (UI)
 
-![ui](ui/stevejobs_favorite.jpeg)
+![ui](../ui/stevejobs_favorite.jpeg)
 
 ## Design Methodology
 Inspired by Steve Jobs favorite painting. The painting is by Pablo Picasso. In the series of paintings he kept abstracting away details while maintaining the essence. This is what I want to do with the UI. I want to simplify it as much as possible.
 
-# v1
-![ui](ui/ui_v1.png)
-The first version of the UI was inspired by SearchGPT from OpenAI.
-![ui](ui/searchgpt_2.jpeg)
+# Ideas
+- The new OpenAI o1 model has a cool UI. It shows what its thinking on a single line. The line changes from time to time. I want to do something similar. It has subtle animations such as the line moving from left to right.
 
-![ui](ui/v1_home.png)
-![ui](ui/v1_diagnose.png)
-![ui](ui/v1_heatmap.png)
+
+
+# v1
+![ui](../ui/ui_v1.png)
+The first version of the UI was inspired by SearchGPT from OpenAI.
+![ui](../ui/searchgpt_2.jpeg)
+
+![ui](../ui/v1_home.png)
+![ui](../ui/v1_diagnose.png)
+![ui](../ui/v1_heatmap.png)
 
 
 ## v2
 This design was inspired more by the ChatGPT interface. The reason I liked this more than SearchGPT ui was because of the dark theme but also the 4 sample prompts. 
 
-![ui](ui/chatgpt.png)
+![ui](../ui/chatgpt.png)
 
 Simplifying the UI more and more. I didnt think we needed model performance on the diagnosis page.
 
-![ui](ui/ui_v2.png)
-![ui](ui/v2_home.png)
-![ui](ui/v2_diagnose.png)
-![ui](ui/v2_heatmap.png)
+![ui](../ui/ui_v2.png)
+![ui](../ui/v2_home.png)
+![ui](../ui/v2_diagnose.png)
+![ui](../ui/v2_heatmap.png)
 
 
 ### next
