@@ -1,5 +1,6 @@
-/mnist/archive/
+/weights/
 
+/datasets/
 /venv/
 
 frontend/node_modules/

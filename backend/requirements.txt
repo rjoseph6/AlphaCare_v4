@@ -6,3 +6,4 @@ flask_cors
 matplotlib
 torch
 opencv-python
+torchvision

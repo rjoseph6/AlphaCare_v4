@@ -1,38 +1,187 @@
-.App {
-  text-align: center;
+.app-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f4f4f4;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1 {
+  color: #333;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.upload-section {
+  margin-bottom: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.upload-section input {
+  margin-right: 10px;
+}
+
+.upload-section button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.upload-section button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.content-section {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.image-preview,
+.stepper-visualization {
+  width: 100%;
+  max-width: 48%;
+}
+
+.image-preview img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stepper-visualization {
+  margin-top: 20px;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.stepper.completed .connector {
+  background-color: #28a745;
+}
+
+.step {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.step .step-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: #fff;
+  line-height: 40px;
+  font-size: 18px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.step.completed .step-icon {
+  background-color: #28a745;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.step.pending .step-icon {
+  background-color: #ddd;
+  color: #aaa;
+}
+
+.step.active .step-icon {
+  background-color: #ffc107;
+}
+
+.step.error .step-icon {
+  background-color: #dc3545;
+}
+
+.step .step-title {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.step .step-subtitle {
+  margin-top: 5px;
+  color: #666;
+}
+
+.connector {
+  width: 40px;
+  height: 4px;
+  background-color: #007bff;
+  margin: 0 -2px;
+}
+
+.connector.completed {
+  background-color: #28a745;
+}
+
+.results-section {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.result-text {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.uncertainty-box,
+.probabilities-box {
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.probabilities-box h3,
+.uncertainty-box h3 {
+  margin-bottom: 10px;
+}
+
+.probability-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.probability-bar span {
+  width: 150px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.bar-container {
+  flex-grow: 1;
+  background-color: #ddd;
+  position: relative;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar {
+  background-color: #007bff;
+  height: 100%;
+}
+
+.probability-text {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  color: #fff;
+  font-size: 12px;
+}
+
+.stepper-visualization .stepper.completed .step-icon {
+  background-color: #28a745;
+}
+
+.stepper-visualization .stepper.completed .connector {
+  background-color: #28a745;
 }

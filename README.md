@@ -1,6 +1,8 @@
 # ReadME
 
-![](ui/hierarchial.png)
+![](ui/ui_stepper.png)
+
+![](ui/hierarchy.png)
 
 ```
 backend
@@ -17,91 +19,26 @@ frontend
     │   └── index.js
     ├── package.json
     ├── package-lock.json
-mnist
-    ├── heatmap.ipynb               
-    ├── mnist_train.ipynb           
-    ├── uncertainty_quantification.ipynb
-pytorch
-    ├── ...                     
+step_1                                  # Skin or Non-Skin
+    ├── inference_skin_nonskin.ipynb               
+    ├── preprocess_coco.py          
+    ├── preprocess_skin.py
+    ├── skin_nonskin_classifier.py
+    ├── README.md
+step_2                                  # Malignant or Benign
+    ├── cancer_noncancer_classifier.py              
+    ├── ham10000_eda.ipynb          
+    ├── ham10000.py
+    ├── README_2.md
+step_3                                  # Melanoma, Basal Cell Carcinoma,Squamous Cell Carcinoma
+    ├── ham10000_malignant.py              
+    ├── malignant_train.py         
+    ├── README.md
 ui
     ├── ...                     
 ```
 
-# How To Run 
-1. Open the terminal and run the following command: 
 
-![](ui/terminal.png)
-
-```bash
-cd Downloads 
-```
-```bash
-git clone https://github.com/rjoseph6/AlphaCare_v4.git
-```
-We are downloading the project from the repository.
-
-MAC
-```
-curl -o test_img.jpg "https://uvderm.com/wp-content/uploads/2023/03/Actinic-Keratosis.jpeg"
-```
-WINDOWS
-```
-wget "https://uvderm.com/wp-content/uploads/2023/03/Actinic-Keratosis.jpeg" -O test_img.jpg
-```
-
-2. Run these commands to start the frontend:
-
-```bash
-cd AlphaCare_v4/frontend
-```
-
-```bash
-npm install
-```
-
-```bash
-npm start
-```
-
-4. A browser window should open with the frontend running. 
-
-![ui](ui/v1_frontend2.png)
-
-5. Start a NEW second terminal
-
-6. Run these commands in the new terminal
-
-```bash
-cd Downloads/AlphaCare_v4/backend 
-```
-```bash
-python3 -m venv venv
-```
-```bash
-source venv/bin/activate
-```
-```bash
-pip3 install -r requirements.txt
-```
-```bash
-python3 app.py
-```
-
-6. The frontend (browser) should now be connected to the backend (python script). 
-
-7. Go to the browser that was initially opened. Click on "Choose File". In Downloads Folder you should see:
-```
-test_img.jpg
-```
-![](ui/downloads.png)
-
-8. Click the "Submit" button. The model will predict the image and display the results.
-
-![ui](ui/v1_frontend.png)
-
-9. More detailed output of the model can be seen in the terminal where the backend is running.
-
-![](ui/backend_terminal.png)
 
 # UI Designs
 
@@ -126,39 +63,7 @@ Using React
 Previously I used the FastAPI to create API Layer. I switched to Flask for the backend due to the ease of use. 
 
 # Models
-## Testing Model 
-This model was quickly trained on a very easy dataset (HAM10000). It is just a test model to see if the backend and frontend are working. 
-
-```python
-# model weights
-model_3.keras
-```
-
-## Official Model
-Model design decisions were made based on the following:
-https://github.com/Tirth27/Skin-Cancer-Classification-using-Deep-Learning
-
-```python
-# pretrained model EfficientNetB4
-base_model = EfficientNetB4(input_shape=IMG_SHAPE, include_top=False, weights='imagenet')
-
-# Adding custom layers
-x = base_model.output
-x = Flatten()(x)
-x = Dense(500, activation='relu', name='500_Dense')(x)
-x = Dense(256, activation='relu', name='256_Dense')(x)
-predictions = Dense(NUM_CLASSES, activation='softmax', name='Final')(x)
-
-model = Model(inputs=base_model.input, outputs=predictions)
-
-# Unfreeze the top 20 layers, except BatchNorm layers
-for layer in model.layers[-20:]:
-    if not isinstance(layer, tf.keras.layers.BatchNormalization):
-        layer.trainable = True  # Keep True to train, False to freeze
-
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-```
-
+For all 3 of the hierarchial classifications I use the same model architecture. The model is the pretrained ResNet18 Model
 
 
 # Bugs
