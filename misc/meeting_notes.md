@@ -24,4 +24,16 @@ https://youtu.be/OKDRsVXv49A?si=bDnlsWGepy4a2QO4&t=918
 # 0 9 - 1 2 - 2 4
 After today's meeting, I am going to focus on the following: explainable AI and hierarchial AI. By the next meeting we should have the SOTA (State of the Art) model trained and ready to go. I am likely going to combine multiple datasets to get the best possible model. Advisor said I should learn the diagnostic procedures for skin cancer so I can better understand the data I am working with. I should understand the difference between the different types of skin cancer and how doctors normally diagnose them. For the UI, he wants me to give the user more information then just the diagnosis. For example, if the model predicts Melanoma it would have a link to a page that explains what Melanoma is and what the signs for it are (knowledge base). NEVER USE HEAT MAP AGAIN UNTIL FULLY UNDERSTAND IT AND CODE ONE FROM SCRATCH. The most important addition he wants me to add is a hierarchial model. He wants me to have a model that can take in an image and output a diagnosis. Then take that diagnosis and output a more specific diagnosis. For example, if the first model outputs Melanoma, the second model should output the specific type of Melanoma.
 
-![](ui/hierarchial.png)
+![](../ui/hierarchy.png)
+
+# 09-19-24
+
+This weeks meeting objectives:
+- Have a working Hierarchial model (3-tier)
+- Review skin disease diagnosis (skin_diseases.md)
+- Have a fully trained state of the art model (ResNet18)
+
+Next Meeting Objectives:
+- Finalize the UI using design software (continuity between disease types)
+- Modify ui to new design (ui_v3)
+- Finalize first disease model and its ui

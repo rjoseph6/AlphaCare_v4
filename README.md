@@ -30,7 +30,7 @@ step_2                                  # Malignant or Benign
     ├── ham10000_eda.ipynb          
     ├── ham10000.py
     ├── README_2.md
-step_3                                  # Melanoma, Basal Cell Carcinoma,Squamous Cell Carcinoma
+step_3                                  # Mel, Bcc ,Scc
     ├── ham10000_malignant.py              
     ├── malignant_train.py         
     ├── README.md
@@ -63,8 +63,17 @@ Using React
 Previously I used the FastAPI to create API Layer. I switched to Flask for the backend due to the ease of use. 
 
 # Models
-For all 3 of the hierarchial classifications I use the same model architecture. The model is the pretrained ResNet18 Model
+For all 3 of the hierarchial classifications I use the same model architecture. The model is the pretrained ResNet18 Model.
 
+```python
+model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+num_ftrs = model.fc.in_features
+
+# Replace the last layer with a binary classification layer
+model.fc = nn.Linear(num_ftrs, NUM_CLASSES)
+```
+
+IDEAS: I should consolidate all the train files to one file that can be used for all hierarchies. I can use a simple pointer to the different pre-processed datasets.
 
 # Bugs
 1. Make sure using Global Environment Python Version 3.11 not the local version 3.9

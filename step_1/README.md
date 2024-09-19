@@ -84,7 +84,7 @@ python3 skin_nonskin_classifier.py
 ```
 •	Loads and preprocesses the images with data augmentation and normalization.
 
-•	Uses a pre-trained MobileNetV2 model from torchvision.
+•	Uses a pre-trained ResNet18 model from torchvision.
 
 •	Replaces the final classifier layer to output two classes: ‘skin’ and ‘non-skin’.
 
@@ -94,14 +94,13 @@ python3 skin_nonskin_classifier.py
 
 ## Model Architecture <a name="models"></a>
 
-We use MobileNetv2 architecture as the backbone. MobileNetV2 is a lightweight deep learning model that is optimized for mobile and edge devices. We replace the final classifier layer to output two classes: ‘skin’ and ‘non-skin’.
+We use ResNet18 architecture as the backbone. We replace the final classifier layer to output two classes: ‘skin’ and ‘non-skin’.
 
 ```python
-# Load pre-trained MobileNetV2 model
-model = models.mobilenet_v2(pretrained=True)
-
-# Modify the classifier
-model.classifier[1] = nn.Linear(model.classifier[1].in_features, 2)
+model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+num_ftrs = model.fc.in_features
+# Replace the last layer with a binary classification layer
+model.fc = nn.Linear(num_ftrs, NUM_CLASSES)
 ```
 
 ## Results <a name="results"></a>
