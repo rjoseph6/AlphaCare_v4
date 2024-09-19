@@ -19,9 +19,9 @@ else:
     print("Using CPU device")
 
 # Image parameters
-IMG_HEIGHT = 100
-IMG_WIDTH = 75
-BATCH_SIZE = 256
+IMG_HEIGHT = 100 # 100
+IMG_WIDTH = 75 # 75
+BATCH_SIZE = 512
 NUM_CLASSES = 3 # Melanoma, Basal Cell Carcinoma, Actinic Keratosis
 EPOCHS = 25
 
@@ -112,6 +112,10 @@ def main():
     # Load pre-trained model and modify for binary classification
     # Update to use 'weights' instead of 'pretrained' to avoid deprecation warnings
     model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+
+    # Trying ResNet152
+    #model = models.resnet152(weights=models.ResNet152_Weights.IMAGENET1K_V1)
+
     num_ftrs = model.fc.in_features
     # Replace the last layer with a binary classification layer
     model.fc = nn.Linear(num_ftrs, NUM_CLASSES)
@@ -256,7 +260,7 @@ def main():
 
     plt.show()
 
-    torch.save(model.state_dict(), '../weights/malignant_model.pth')
+    torch.save(model.state_dict(), '../weights/malignant_model_beforemeeting.pth')
 
 if __name__ == '__main__':
     main()

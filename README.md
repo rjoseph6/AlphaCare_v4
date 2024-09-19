@@ -59,11 +59,34 @@ Figma: https://www.figma.com/design/NdtFBlTj6g0E0xhGH18msF/SearchGPT?node-id=0-1
 # Frontend 
 Using React 
 
+```bash
+cd alphacare_v4/AlphaCare_v4/frontend
+```
+
+```bash
+npm start
+```
+
 # Backend
 Previously I used the FastAPI to create API Layer. I switched to Flask for the backend due to the ease of use. 
 
+```bash
+cd alphacare_v4/AlphaCare_v4/backend 
+```
+```bash
+python3 -m venv venv
+```
+```bash
+source venv/bin/activate
+```
+
+```bash
+python3 app.py
+```
+
 # Models
-For all 3 of the hierarchial classifications I use the same model architecture. The model is the pretrained ResNet18 Model.
+For all 3 of the hierarchial classifications I use the same model architecture. The model is the pretrained ResNet18 Model. ResNet comes in various models like ResNet18, ResNet34, ResNet50, ResNet101, and ResNet152. I used ResNet18 because it is lightweight. I need to conduct more tests to see if larger models make a substantial difference. 
+
 
 ```python
 model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
@@ -73,7 +96,9 @@ num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, NUM_CLASSES)
 ```
 
-IDEAS: I should consolidate all the train files to one file that can be used for all hierarchies. I can use a simple pointer to the different pre-processed datasets.
+IDEAS: 
+- I should consolidate all the train files to one file that can be used for all hierarchies. I can use a simple pointer to the different pre-processed datasets.
+- If I use segmentation algorithm I can zoom into the segmented area and provide more resolution without increasing the image size.
 
 # Bugs
 1. Make sure using Global Environment Python Version 3.11 not the local version 3.9

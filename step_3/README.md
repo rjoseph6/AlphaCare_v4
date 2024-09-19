@@ -3,7 +3,8 @@
 ![](../ui/hierarchial_3.png)
 
 
-In this third stage of the hierarchical skin disease detection project, we focus on building a model that differentiates between the different MALIGNANT skin cancers: melanoma, basal cell carcinoma, and squamous cell carcinoma.
+In this third stage of the hierarchical skin disease detection project, we focus on building a model that differentiates between the different MALIGNANT skin cancers: melanoma, basal cell carcinoma, and actinic keratoses.
+
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -22,7 +23,7 @@ In this third stage of the hierarchical skin disease detection project, we focus
 The HAM10000 dataset is a collection of 10,015 dermatoscopic images of common pigmented skin lesions. The data consists of 7 classes of skin cancer, including melanoma, basal cell carcinoma, actinic keratoses, benign keratosis, dermatofibroma, and vascular lesions. 
 
 ## Class Balance
-I am reducing the original 7 classes to 3 classes: melanoma, basal cell carcinoma, and squamous cell carcinoma.
+I am reducing the original 7 classes to 3 classes: melanoma, basal cell carcinoma, and actinic keratoses.
 
 ![](../ui/malignant_classes.png)
 

@@ -146,7 +146,7 @@ function App() {
                   {getStepIcon('skin', getStepStatus('skin'))}
                 </div>
                 <div className="step-title">Skin Detection</div>
-                <div className="step-subtitle">Skin / Non-skin</div>
+                
               </div>
 
               {/* Connector */}
@@ -158,7 +158,7 @@ function App() {
                   {getStepIcon('malignancy', getStepStatus('malignancy'))}
                 </div>
                 <div className="step-title">Malignancy Classification</div>
-                <div className="step-subtitle">Benign / Malignant</div>
+                
               </div>
 
               {/* Connector */}
@@ -170,7 +170,7 @@ function App() {
                   {getStepIcon('cancer_type', getStepStatus('cancer_type'))}
                 </div>
                 <div className="step-title">Cancer Type Classification</div>
-                <div className="step-subtitle">akiec / bcc / mel</div>
+                
               </div>
 
               {/* Connector */}
