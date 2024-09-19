@@ -28,12 +28,33 @@ After today's meeting, I am going to focus on the following: explainable AI and 
 
 # 09-19-24
 
-This weeks meeting objectives:
+## This weeks meeting objectives:
 - Have a working Hierarchial model (3-tier)
 - Review skin disease diagnosis (skin_diseases.md)
 - Have a fully trained state of the art model (ResNet18)
 
-Next Meeting Objectives:
-- Finalize the UI using design software (continuity between disease types)
-- Modify ui to new design (ui_v3)
-- Finalize first disease model and its ui
+## Summary
+Although, my hierarchial model is decent I could have extended it to way more than 3 tiers. Read the hierarchial paper he sent me. I need to finalize the UI design I want and then implement it. This design I want to make sure it is consistent between various disease types. Next meeting time is 11:30 AM next Thursday. After the design is finalized, code up the entire UI and animations. Basically finalize the 1st disease class model and its UI.
+
+## Novel Ideas
+Dr. Xu was sticking to the point that I should come up with something more novel. I technically am just just using basic CNNs and interfacing them. I need to have higher standards for myself. 
+
+## Project Report
+Since I am almost done with coding I was advised to start writing the project report. 
+
+Table of Contents: 
+- Introduction
+- Background
+- Related Work
+- Methodology
+- Results
+- Conclusion
+
+
+
+# 09-26-24 (11:30 AM)
+
+## Meeting Objectives
+- Finalize the UI design
+- Implement the UI design
+- Completed 1st disease class model and its UI

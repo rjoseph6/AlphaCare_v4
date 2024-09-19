@@ -108,3 +108,4 @@ If a lesion is very suspicious after visual examination and dermascopy, a dermat
 - Type of skin cancer (Melanoma, BCC, SCC)
 - The stage of the cancer (how deep it has invaded and if it has spread)
 ![](ui/histo_path.png)
+
