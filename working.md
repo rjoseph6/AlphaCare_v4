@@ -27,3 +27,17 @@ I need to make it so that the image size is constant so it doesnt mess everythin
 ![](ui/working_v2c.png)
 
 ![](ui/working_v2d.png)
+
+## v3
+
+Date: September 23
+
+Time: 3:17 PM
+
+I switched it so that the right and left sides are compartmentalized. It does seem to fix the problem of very thin images but it did help with making the UI look better by making normal image span entire screen. Need to solve this issue with thin smaller images. 
+
+![](ui/working_v3a.png)
+
+![](ui/working_v3b.png)
+
+![](ui/working_v3c.png)

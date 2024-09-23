@@ -8,7 +8,6 @@ function Predictions() {
   const location = useLocation();
   const navigate = useNavigate();
   const {
-    result,
     probabilities,
     uncertainty,
     error,

@@ -26,20 +26,45 @@
 }
 
 /* Predictions container to hold left and right panels */
+/*
 .predictions-container {
   display: flex;
+  flex-wrap: nowrap;
   height: calc(100vh - 160px);
 }
+*/
+.predictions-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  grid-gap: 20px; /* Space between the panels */
+  height: calc(100vh - 160px);
+  padding: 10px;
+  box-sizing: border-box;
+}
 
-/* Left Panel */
+
+/*
 .left-panel {
-  width: calc(50% - 20px); /* 50% width minus margins */
-  margin: 10px; /* 10px margins */
-  height: calc(100vh - 160px - 20px); /* Full height minus header and margins */
+  flex: 0 0 calc(50% - 20px); 
+  margin: 10px;
+  height: calc(100vh - 160px - 20px);
+  box-sizing: border-box; 
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* Hide any image overflow */
+  overflow: hidden;
+}
+
+*/
+
+.left-panel {
+  background-color: #fff; /* Optional: set a background color */
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 /* Image Preview */
@@ -55,12 +80,21 @@
   border-radius: 20px;
 }
 
-/* Right Panel */
 .right-panel {
-  width: 50%; /* 50% width minus margins */
-  margin: 10px; /* 10px margins */
-  height: 100%; /* Full height minus header and margins */
-  padding: 0; /* Remove padding since we're using margins */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+/* Right Panel */
+/*
+.right-panel {
+  flex: 0 0 calc(50% - 20px); 
+  margin: 10px; 
+  height: calc(100vh - 160px - 20px);
+  box-sizing: border-box;
+  padding: 0; 
   display: flex;
   flex-direction: column;
 }
@@ -226,6 +260,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  /*
   .predictions-container {
     flex-direction: column;
     height: auto;
@@ -233,11 +268,28 @@
 
   .left-panel,
   .right-panel {
-    width: calc(100% - 20px); /* Full width minus margins */
+    width: calc(100% - 20px); 
     max-width: 100%;
-    margin: 10px; /* 10px margins */
+    margin: 10px; 
     height: auto;
   }
+  */
+  .predictions-container {
+    grid-template-columns: 1fr; /* Single column layout */
+    grid-gap: 10px;
+  }
+
+  .left-panel,
+  .right-panel {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .right-panel {
+    overflow-y: visible;
+  }
+
 
   .top-boxes {
     flex-direction: column;
@@ -247,7 +299,8 @@
     width: 100%;
     margin-bottom: 15px;
   }
-
+}
+/*
   .prediction-item {
     flex-direction: column;
     align-items: flex-start;
@@ -266,3 +319,4 @@
     margin-left: 0;
   }
 }
+*/
