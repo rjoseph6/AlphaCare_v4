@@ -1,0 +1,271 @@
+/* src/components/Predictions.css */
+
+.app-container {
+  font-family: Arial, sans-serif;
+  background-color: #F2F2F2;
+  min-height: 100vh;
+}
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f4f4f4;
+  padding: 10px 20px;
+  z-index: 1000;
+}
+
+.logo {
+  height: 30px;
+}
+
+.main-content {
+  padding-top: 80px; /* To account for fixed header */
+  padding-bottom: 40px;
+}
+
+/* Predictions container to hold left and right panels */
+.predictions-container {
+  display: flex;
+  height: calc(100vh - 160px);
+  margin: 10px; /* 10px margins around the container */
+}
+
+/* Left Panel */
+.left-panel {
+  flex: 1;
+  width: calc(50% - 20px); /* 50% minus margins */
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Hide any image overflow */
+  margin-right: 10px; /* Space between left and right panels */
+}
+
+/* Image Preview */
+.image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fill the container, cropping if necessary */
+  border-radius: 20px;
+}
+
+/* Right Panel */
+.right-panel {
+  flex: 1;
+  width: calc(50% - 20px); /* 50% minus margins */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px; /* Space between left and right panels */
+}
+
+/* Top Boxes */
+.top-boxes {
+  display: flex;
+  flex-direction: column; /* Stack boxes vertically */
+  margin-bottom: 20px;
+}
+
+/* General Box Styles */
+.box {
+  position: relative; /* For overlay positioning */
+  width: 100%; /* Make boxes span full width of right panel */
+  background-color: #1E2339; /* This will be overridden by background-image */
+  color: #fff;
+  padding: 15px;
+  text-align: center;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc; /* Grey border around each box */
+  margin-bottom: 15px; /* Space between boxes */
+
+  /* Background Image Properties */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Specific Background Images for Each Box */
+.box-predicted {
+  background-image: url('background-predicted.jpeg'); /* Replace with your image path */
+}
+
+.box-uncertainty {
+  background-image: url('background-uncertainty.jpeg'); /* Replace with your image path */
+}
+
+/* Optional: Add a semi-transparent overlay for better text readability */
+.box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* Adjust opacity as needed */
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.box h2,
+.box .percentage {
+  position: relative;
+  z-index: 2; /* Ensure text is above the overlay */
+}
+
+.percentage {
+  font-size: 2em;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+}
+
+/* Prediction List */
+.prediction-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* Prediction Item */
+.prediction-item {
+  display: flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  height: 85px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  padding: 0 10px; /* Add horizontal padding */
+}
+
+.disease-name {
+  width: 30%;
+  font-weight: bold;
+  color: #555;
+}
+
+.probability-descriptor {
+  width: 20%;
+  color: #777;
+  display: flex;
+  align-items: center;
+}
+
+/* Probability Line Container */
+.probability-line-container {
+  width: 50%;
+  position: relative;
+  height: 20px; /* Thickness of the line */
+  margin-left: auto; /* Push it to the right */
+}
+
+/* Probability Line */
+.probability-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 6px; /* Adjust thickness as needed */
+  background: linear-gradient(to right, #28a745, #f4f4f4); /* Green gradient */
+  border-radius: 5px;
+  transform: translateY(-50%);
+}
+
+/* Circle Indicator on the Line */
+.probability-circle-indicator {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff; /* Default color, overridden by inline style */
+  border: 2px solid rgb(0, 0, 0);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+/* Probability Circle */
+.probability-circle {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Error message styles */
+.error-message {
+  color: #dc3545;
+}
+
+.error-message h2 {
+  color: #dc3545;
+}
+
+/* Back button styles */
+.back-button {
+  margin-top: 30px;
+  padding: 12px 24px;
+  background-color: #861919;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  align-self: center;
+}
+
+.back-button:hover {
+  background-color: #6e1515;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .predictions-container {
+    flex-direction: column;
+    height: auto;
+    margin: 10px; /* Maintain margins */
+  }
+
+  .left-panel,
+  .right-panel {
+    width: calc(100% - 20px); /* Full width minus margins */
+    max-width: 100%;
+    margin: 10px; /* 10px margins */
+    height: auto; /* Adjust height for responsiveness */
+  }
+
+  .top-boxes {
+    flex-direction: column;
+  }
+
+  .box {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .prediction-item {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 10px;
+  }
+
+  .disease-name,
+  .probability-descriptor,
+  .probability-line-container {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .probability-line-container {
+    margin-left: 0;
+  }
+}

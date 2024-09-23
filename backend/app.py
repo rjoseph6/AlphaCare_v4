@@ -1,3 +1,5 @@
+# src/app.py
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
@@ -7,6 +9,8 @@ from torchvision import models
 from PIL import Image
 import io
 import os
+import numpy as np
+from scipy.stats import entropy  # Import entropy for uncertainty calculation
 
 app = Flask(__name__)
 CORS(app)
@@ -16,28 +20,41 @@ print("----------------- Starting Backend Server -----------------")
 # =========================
 # Device Configuration
 # =========================
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
+if torch.backends.mps.is_available():
+    device = torch.device("mps")
+    print("Using MPS device")
+elif torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("Using CUDA device")
+else:
+    device = torch.device("cpu")
+    print("Using CPU device")
 
 # =========================
 # Image Transformations
 # =========================
-IMG_HEIGHT = 100
-IMG_WIDTH = 75
+IMG_HEIGHT = 224  # Updated to 224 for ResNet
+IMG_WIDTH = 224   # Updated to 224 for ResNet
 
 data_transforms = transforms.Compose([
     transforms.Resize((IMG_HEIGHT, IMG_WIDTH)),
     transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406],   # Mean
-                         [0.229, 0.224, 0.225])  # Std
+    transforms.Normalize([0.485, 0.456, 0.406],   # Mean for normalization
+                         [0.229, 0.224, 0.225])  # Std for normalization
 ])
 
 # =========================
 # Class Names Definitions
 # =========================
-class_names_skin = ['non-skin', 'skin']
-class_names_malignancy = ['benign', 'malignant']
-class_names_cancer_type = ['akiec', 'bcc', 'mel']
+lesion_type_dict = {
+    0: 'Actinic Keratosis',
+    1: 'Basal Cell Carcinoma',
+    2: 'Melanoma',
+    3: 'Benign Keratosis-like Lesions',
+    4: 'Dermatofibroma',
+    5: 'Melanocytic Nevi',
+    6: 'Vascular Lesions'
+}
 
 # =========================
 # Model Loading Function
@@ -45,16 +62,16 @@ class_names_cancer_type = ['akiec', 'bcc', 'mel']
 def load_model(model_path, num_classes):
     """
     Loads a ResNet18 model, modifies the final layer, and loads the saved weights.
-    
+
     Args:
         model_path (str): Path to the saved model weights.
         num_classes (int): Number of output classes.
-    
+
     Returns:
         model (torch.nn.Module): The loaded and modified model.
     """
     # Load pre-trained ResNet18 model
-    model = models.resnet18(weights=None)
+    model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
     num_ftrs = model.fc.in_features
     # Replace the final layer with a new one for the desired number of classes
     model.fc = nn.Linear(num_ftrs, num_classes)
@@ -65,164 +82,114 @@ def load_model(model_path, num_classes):
     return model
 
 # =========================
-# Load All Models
+# Load the Trained Model
 # =========================
-print("Loading models...")
+print("Loading the 7-class ResNet-18 model...")
 
-skin_model_path = '../weights/skin_nonskin_resnet.pth'
-malignancy_model_path = '../weights/cancer_noncancer_model_10epochs.pth'
-cancer_type_model_path = '../weights/malignant_model.pth'
+model_path = '../weights/resnet18_ham10000_7classes.pth'
 
-# Check if model files exist
-for path in [skin_model_path, malignancy_model_path, cancer_type_model_path]:
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Model file not found: {path}")
+# Check if the model file exists
+if not os.path.exists(model_path):
+    raise FileNotFoundError(f"Model file not found: {model_path}")
 
-skin_model = load_model(skin_model_path, num_classes=2)
-malignancy_model = load_model(malignancy_model_path, num_classes=2)
-cancer_type_model = load_model(cancer_type_model_path, num_classes=3)
+# Load the model
+model = load_model(model_path, num_classes=7)
 
-print("All models loaded successfully.")
+print("Model loaded successfully.")
 
 # =========================
 # Preprocess Image Function
 # =========================
 def preprocess_image(image_bytes):
-    img = Image.open(io.BytesIO(image_bytes))
-    img = img.convert("RGB")
-    return img
-
-# =========================
-# Hierarchical Inference Function
-# =========================
-def hierarchical_inference(image, skin_model, malignancy_model, cancer_type_model):
     """
-    Performs hierarchical inference on a PIL image.
-    
+    Preprocesses the input image bytes for model inference.
+
     Args:
-        image (PIL.Image): Input image.
-        skin_model, malignancy_model, cancer_type_model: Loaded models.
-    
+        image_bytes (bytes): Image in bytes.
+
     Returns:
-        result (dict): Dictionary containing predictions.
+        img (PIL.Image): Preprocessed PIL Image.
     """
-    result = {}
-    print("------------------------------------------")
-    print("Stage 1: Skin Detection")
-    stage = 'skin'
-    input_skin = data_transforms(image).unsqueeze(0).to(device)
-    with torch.no_grad():
-        output_skin = skin_model(input_skin)
-        probs_skin = torch.softmax(output_skin, dim=1)[0]
-        _, preds_skin = torch.max(output_skin, 1)
-        skin_prob = probs_skin[preds_skin].item()
-        skin_prediction = class_names_skin[preds_skin.item()]
-        # Compute entropy
-        entropy_skin = -torch.sum(probs_skin * torch.log(probs_skin + 1e-8)).item()
-        # Class probabilities
-        class_probabilities_skin = {class_names_skin[i]: probs_skin[i].item() for i in range(len(class_names_skin))}
-        # Collect result
-        result = {
-            "class_index": preds_skin.item(),
-            "disease_name": skin_prediction,
-            "class_probabilities": class_probabilities_skin,
-            "uncertainty": entropy_skin,
-            "heatmap_url": None,  # No heatmap
-            "stage": "skin"
-        }
-    print(f"Skin Prediction: {skin_prediction} ({skin_prob:.2f})")
-    print("------------------------------------------")
-
-    if skin_prediction == 'skin':
-        print("Skin detected. Proceeding to next stages.")
-        print("------------------------------------------")
-        print("Stage 2: Malignancy Classification")
-        stage = 'malignancy'
-        input_malignancy = data_transforms(image).unsqueeze(0).to(device)
-        with torch.no_grad():
-            output_malignancy = malignancy_model(input_malignancy)
-            probs_malignancy = torch.softmax(output_malignancy, dim=1)[0]
-            _, preds_malignancy = torch.max(output_malignancy, 1)
-            malignancy_prob = probs_malignancy[preds_malignancy].item()
-            malignancy_prediction = class_names_malignancy[preds_malignancy.item()]
-            # Compute entropy
-            entropy_malignancy = -torch.sum(probs_malignancy * torch.log(probs_malignancy + 1e-8)).item()
-            # Class probabilities
-            class_probabilities_malignancy = {class_names_malignancy[i]: probs_malignancy[i].item() for i in range(len(class_names_malignancy))}
-            # Collect result
-            result = {
-                "class_index": preds_malignancy.item(),
-                "disease_name": malignancy_prediction,
-                "class_probabilities": class_probabilities_malignancy,
-                "uncertainty": entropy_malignancy,
-                "heatmap_url": None,  # No heatmap
-                "stage": "malignancy"
-            }
-        print(f"Malignancy Prediction: {malignancy_prediction} ({malignancy_prob:.2f})")
-        print("------------------------------------------")
-
-        if malignancy_prediction == 'malignant':
-            print("Malignant lesion detected. Proceeding to next stage.")
-            print("------------------------------------------")
-            print("Stage 3: Cancer Type Classification")
-            stage = 'cancer_type'
-            input_cancer_type = data_transforms(image).unsqueeze(0).to(device)
-            with torch.no_grad():
-                output_cancer_type = cancer_type_model(input_cancer_type)
-                probs_cancer_type = torch.softmax(output_cancer_type, dim=1)[0]
-                _, preds_cancer_type = torch.max(output_cancer_type, 1)
-                cancer_type_prob = probs_cancer_type[preds_cancer_type].item()
-                cancer_type_prediction = class_names_cancer_type[preds_cancer_type.item()]
-                # Compute entropy
-                entropy_cancer_type = -torch.sum(probs_cancer_type * torch.log(probs_cancer_type + 1e-8)).item()
-                # Class probabilities
-                class_probabilities_cancer_type = {class_names_cancer_type[i]: probs_cancer_type[i].item() for i in range(len(class_names_cancer_type))}
-                # Collect result
-                result = {
-                    "class_index": preds_cancer_type.item(),
-                    "disease_name": cancer_type_prediction,
-                    "class_probabilities": class_probabilities_cancer_type,
-                    "uncertainty": entropy_cancer_type,
-                    "heatmap_url": None,  # No heatmap
-                    "stage": "cancer_type"
-                }
-            print(f"Cancer Type Prediction: {cancer_type_prediction} ({cancer_type_prob:.2f})")
-            print("------------------------------------------")
-    
-    # After all stages, set stage to 'model_predicted'
-    if skin_prediction == 'skin' and (malignancy_prediction == 'benign' or (malignancy_prediction == 'malignant' and cancer_type_prediction in class_names_cancer_type)):
-        result["stage"] = "model_predicted"
-    
-    return result
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        img = img.convert("RGB")
+        return img
+    except Exception as e:
+        print(f"Error in image preprocessing: {e}")
+        return None
 
 # =========================
 # Predict Endpoint
 # =========================
-@app.route('/predict', methods=['POST']) 
-def predict(): 
+@app.route('/predict', methods=['POST'])
+def predict():
+    """
+    Endpoint to handle image classification requests.
+
+    Expects:
+        - 'file': Image file uploaded via form-data.
+
+    Returns:
+        JSON response with class indices, full disease names, probabilities, and uncertainty.
+    """
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
-    
+
     file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
     image_bytes = file.read()
     image = preprocess_image(image_bytes)
-    
+
+    if image is None:
+        return jsonify({"error": "Invalid image file"}), 400
+
     try:
-        predictions = hierarchical_inference(image, skin_model, malignancy_model, cancer_type_model)
-        # Return predictions as JSON with required keys
+        # Preprocess the image
+        input_tensor = data_transforms(image).unsqueeze(0).to(device)
+
+        # Forward pass
+        with torch.no_grad():
+            outputs = model(input_tensor)
+            probabilities = torch.softmax(outputs, dim=1).cpu().numpy()[0]
+
+        # Map class indices to full names and probabilities
+        predictions = {}
+        for idx, prob in enumerate(probabilities):
+            disease_full_name = lesion_type_dict.get(idx, f"Class {idx}")
+            predictions[disease_full_name] = round(float(prob), 4)  # Rounded to 4 decimal places
+
+        # Identify the predicted class
+        predicted_class_idx = np.argmax(probabilities)
+        predicted_class_name = lesion_type_dict.get(predicted_class_idx, f"Class {predicted_class_idx}")
+        predicted_probability = round(float(probabilities[predicted_class_idx]), 4)
+
+        # Compute Uncertainty using Entropy
+        uncertainty = round(float(entropy(probabilities, base=2)), 4)  # Entropy in bits
+
+        # Prepare the response
         response = {
-            "class_index": predictions.get("class_index"),
-            "disease_name": predictions.get("disease_name"),
-            "class_probabilities": predictions.get("class_probabilities"),
-            "uncertainty": predictions.get("uncertainty"),
-            "heatmap_url": None, # As per your request, no heatmap is generated
-            "stage": predictions.get("stage")
+            "predicted_class_index": int(predicted_class_idx),
+            "predicted_disease_name": predicted_class_name,
+            "predicted_probability": predicted_probability,
+            "class_probabilities": predictions,
+            "uncertainty": uncertainty,  # Added uncertainty field
+            "heatmap_url": None  # Placeholder if you implement heatmap generation
         }
-        return jsonify(response)
+
+        print(f"Prediction: {response}")
+
+        return jsonify(response), 200
 
     except Exception as e:
         print(f"An error occurred during inference: {e}")
         return jsonify({"error": str(e)}), 500
 
+# =========================
+# Run the Flask App
+# =========================
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Set debug=False in production
+    app.run(host='0.0.0.0', port=5000, debug=True)

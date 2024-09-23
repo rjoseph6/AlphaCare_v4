@@ -7,8 +7,7 @@ Inspired by Steve Jobs favorite painting. The painting is by Pablo Picasso. In t
 
 # Ideas
 - The new OpenAI o1 model has a cool UI. It shows what its thinking on a single line. The line changes from time to time. I want to do something similar. It has subtle animations such as the line moving from left to right.
-
-
+- Show how ChatGPT UI evolved over time
 
 # v1
 ![ui](../ui/ui_v1.png)

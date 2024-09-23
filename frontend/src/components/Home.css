@@ -1,0 +1,290 @@
+/* ==============================
+   App Container Styles
+   ============================== */
+
+   .app-container {
+    font-family: 'Inter', sans-serif;
+    background-color: #FFFFFF;
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers items horizontally */
+    justify-content: space-between; /* Distributes space vertically */
+    padding: 20px 0; /* Vertical padding */
+  }
+  
+  /* ==============================
+     Header Styles
+     ============================== */
+  
+  .home-header {
+    position: fixed; /* Fixed position at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #eaeaea; /* Dark red background for header */
+    padding: 10px 20px; /* Padding inside header */
+    z-index: 1000; /* Ensure header stays on top */
+  }
+  
+  .home-header .logo {
+    height: 30px; /* Visible height for the logo */
+  }
+  
+  /* ==============================
+     Main Content Styles
+     ============================== */
+  
+  .home-main-content {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+    justify-content: center; /* Center children vertically */
+    flex: 1; /* Allow main content to grow and fill available space */
+    width: 100%;
+    max-width: 800px; /* Optional: Limits the maximum width */
+    padding: 20px; /* Optional: Adds padding inside the main content */
+    margin-top: 0; /* Remove if not needed */
+  }
+  
+  /* ==============================
+     Title Styles
+     ============================== */
+  
+  .home-title {
+    margin-top: 20px; /* Space above the title */
+    font-size: 48px; /* Large font size */
+    font-weight: 800; /* Extra Bold */
+    color: #333; /* Dark gray text */
+    text-align: center; /* Centered text */
+  }
+  
+  /* ==============================
+     Upload Area Styles
+     ============================== */
+  
+  .home-upload-area {
+    width: 46.1vw; /* 100vw / 2.17 ≈ 46.08vw */
+    height: 19vh;  /* 100vh / 5.27 ≈ 19.00vh */
+    
+    min-width: 300px;
+    max-width: 600px;
+    min-height: 150px;
+    max-height: 300px;
+    
+    border: 2px dashed #ccc; /* Dashed border with light gray color */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #eaeaea; /* Light gray background */
+    
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column; /* Arrange icon and texts vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Center items vertically */
+    
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: border-color 0.3s; /* Smooth border color transition */
+    position: relative; /* For positioning icon */
+    
+    box-sizing: border-box; /* Include padding and border in width and height */
+  }
+  
+  .home-upload-area:hover {
+    border-color: #007bff; /* Blue border on hover */
+  }
+  
+  .upload-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0px;
+    
+    /* Background Image */
+    background-image: url('../assets/image.png'); /* Corrected path */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .upload-text {
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  .upload-subtext {
+    display: block; /* Ensures it appears below main text */
+    font-size: 14px;
+    color: #888; /* Lighter grey for subtext */
+    margin-top: 5px;
+  }
+  
+  /* ==============================
+     Submit Button Styles
+     ============================== */
+  
+  .submit-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  
+  /* ==============================
+     Content Section Styles
+     ============================== */
+  
+  .content-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+  }
+  
+  /* ==============================
+     Image Preview Styles
+     ============================== */
+  
+  .image-preview {
+    margin-bottom: 20px;
+  }
+  
+  .image-preview img {
+    width: 400px;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ==============================
+     Stepper Visualization Styles
+     ============================== */
+  
+  .stepper-visualization {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 20px;
+  }
+  
+  .stepper {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .step {
+    text-align: center;
+    flex: 1;
+    position: relative;
+  }
+  
+  .step .step-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: #fff;
+    line-height: 40px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .step.completed .step-icon {
+    background-color: #28a745;
+  }
+  
+  .step.pending .step-icon {
+    background-color: #ddd;
+    color: #aaa;
+  }
+  
+  .step.active .step-icon {
+    background-color: #ffc107;
+  }
+  
+  .step.error .step-icon {
+    background-color: #dc3545;
+  }
+  
+  .step .step-title {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .connector {
+    width: 40px;
+    height: 4px;
+    background-color: #007bff;
+    margin: 0 -2px;
+  }
+  
+  .connector.completed {
+    background-color: #28a745;
+  }
+  
+  /* ==============================
+     Disclaimer Styles
+     ============================== */
+  
+  .disclaimer {
+    font-size: 12px;
+    color: #888; /* Light grey */
+    text-align: center;
+    max-width: 600px;
+    padding: 0 20px;
+  }
+  
+  .disclaimer a {
+    color: #888; /* Match the disclaimer color */
+    text-decoration: underline;
+  }
+  
+  .disclaimer a:hover {
+    color: #555; /* Darker grey on hover */
+  }
+  
+  /* ==============================
+     Responsive Design (Optional)
+     ============================== */
+  
+  @media (max-width: 768px) {
+    .home-upload-area {
+      width: 70vw; /* Increase width relative to smaller screens */
+      height: 25vh; /* Adjust height as needed */
+    }
+  
+    .upload-icon {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .upload-text {
+      font-size: 16px;
+    }
+  
+    .upload-subtext {
+      font-size: 12px;
+    }
+  
+    .submit-button {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  
+    .disclaimer {
+      max-width: 90%;
+    }
+  }

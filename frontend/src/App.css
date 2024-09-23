@@ -1,54 +1,166 @@
+/* src/App.css */
+
+/* ==============================
+   General Styles
+   ============================== */
+
+/* Import Inter font with necessary weights */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+
+/* Apply global styles */
 .app-container {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  background-color: #f4f4f4;
+  font-family: 'Inter', sans-serif;
+  background-color: #FFFFFF; /* Unified background */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-h1 {
+/* ==============================
+   Header Styles
+   ============================== */
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #FFFFFF; /* Match main page background */
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow */
+  z-index: 1000; /* Ensure header stays on top */
+}
+
+.logo {
+  height: 40px; /* Increased for better visibility */
+}
+
+/* ==============================
+   Main Content Styles
+   ============================== */
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #FFFFFF;
+  padding-top: 80px; /* Accounts for fixed header */
+  flex: 1; /* Allows main content to grow */
+}
+
+.title {
+  margin-top: 40px; /* Moved closer to upload box */
+  font-size: 48px;
+  font-weight: 800; /* Inter Extra Bold */
   color: #333;
 }
 
-.upload-section {
-  margin-bottom: 20px;
+/* ==============================
+   Upload Area Styles
+   ============================== */
+
+.upload-area {
+  margin-top: 40px;
+  width: 400px;
+  height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background-color: #eaeaea;
+  display: flex;
+  flex-direction: column; /* Arrange icon and texts vertically */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  position: relative; /* For positioning icon */
 }
 
-.upload-section input {
-  margin-right: 10px;
+.upload-area:hover {
+  border-color: #007bff;
 }
 
-.upload-section button {
-  padding: 8px 16px;
+.upload-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  /* You can use an SVG icon or a background image */
+  background-image: url('image.jpeg'); /* Replace with your icon path */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.upload-text {
+  font-size: 18px;
+  color: #555;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.upload-subtext {
+  font-size: 14px;
+  color: #888; /* Lighter grey for subtext */
+  margin-top: 5px;
+}
+
+.upload-area .browse-text {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* ==============================
+   Submit Button Styles
+   ============================== */
+/*
+.submit-button {
+  margin-top: 20px;
+  padding: 12px 24px;
   background-color: #007bff;
   color: #fff;
   border: none;
-  cursor: pointer;
   border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.upload-section button:disabled {
+.submit-button:disabled {
   background-color: #aaa;
   cursor: not-allowed;
 }
 
+*/
+
+/* ==============================
+   Content Section Styles
+   ============================== */
+
 .content-section {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
 }
 
-.image-preview,
-.stepper-visualization {
-  width: 100%;
-  max-width: 48%;
+/* Image Preview Styles */
+.image-preview {
+  margin-bottom: 20px;
 }
 
 .image-preview img {
-  width: 100%;
+  width: 400px;
+  max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* ==============================
+   Stepper Visualization Styles
+   ============================== */
+
 .stepper-visualization {
+  width: 100%;
+  max-width: 800px;
   margin-top: 20px;
 }
 
@@ -56,10 +168,6 @@ h1 {
   display: flex;
   align-items: center;
   position: relative;
-}
-
-.stepper.completed .connector {
-  background-color: #28a745;
 }
 
 .step {
@@ -102,11 +210,8 @@ h1 {
 .step .step-title {
   margin-top: 10px;
   font-weight: bold;
-}
-
-.step .step-subtitle {
-  margin-top: 5px;
-  color: #666;
+  font-size: 14px;
+  color: #333;
 }
 
 .connector {
@@ -120,14 +225,21 @@ h1 {
   background-color: #28a745;
 }
 
+/* ==============================
+   Results Section Styles
+   ============================== */
+
 .results-section {
   margin-top: 30px;
   width: 100%;
+  max-width: 800px;
+  text-align: center;
 }
 
 .result-text {
   font-size: 24px;
   font-weight: bold;
+  color: #333;
 }
 
 .uncertainty-box,
@@ -142,6 +254,7 @@ h1 {
 .probabilities-box h3,
 .uncertainty-box h3 {
   margin-bottom: 10px;
+  color: #333;
 }
 
 .probability-bar {
@@ -154,6 +267,8 @@ h1 {
   width: 150px;
   text-align: right;
   margin-right: 10px;
+  font-size: 14px;
+  color: #333;
 }
 
 .bar-container {
@@ -178,10 +293,56 @@ h1 {
   font-size: 12px;
 }
 
-.stepper-visualization .stepper.completed .step-icon {
+/* ==============================
+   Back Button Styles
+   ============================== */
+
+.back-button {
+  margin-top: 20px;
+  padding: 12px 24px;
   background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.stepper-visualization .stepper.completed .connector {
-  background-color: #28a745;
+.back-button:hover {
+  background-color: #218838;
+}
+
+/* ==============================
+   Error Message Styles
+   ============================== */
+
+.error-message {
+  margin-top: 20px;
+  color: #dc3545;
+}
+
+.error-message h2 {
+  color: #dc3545;
+}
+
+/* ==============================
+   Disclaimer Styles
+   ============================== */
+
+.disclaimer {
+  margin-top: 40px;
+  font-size: 12px;
+  color: #888; /* Light grey */
+  text-align: center;
+  max-width: 600px;
+  padding: 0 20px;
+}
+
+.disclaimer a {
+  color: #888; /* Match the disclaimer color */
+  text-decoration: underline;
+}
+
+.disclaimer a:hover {
+  color: #555; /* Darker grey on hover */
 }
