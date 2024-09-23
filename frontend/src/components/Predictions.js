@@ -76,9 +76,10 @@ function Predictions() {
               <>
                 {/* Top Two Boxes */}
                 <div className="top-boxes">
+
                   {/* Most Predicted Class */}
                   <div className="box box-predicted">
-                    <h2>{result ? result : 'Diagnosis'}</h2>
+                    <h2>{probabilities[0][0]}</h2>
                     <p className="percentage">
                       {probabilities && probabilities.length > 0
                         ? `${(probabilities[0][1] * 100).toFixed(2)}%`
@@ -91,7 +92,7 @@ function Predictions() {
                     <h2>Uncertainty</h2>
                     <p className="percentage">
                       {uncertainty !== null
-                        ? `${((uncertainty / Math.log2(7)) * 100).toFixed(2)}%`
+                        ? `${(uncertainty).toFixed(2)}%`
                         : 'N/A'}
                     </p>
                     {/* Optional: Add a progress bar */}
@@ -131,7 +132,7 @@ function Predictions() {
                           className="probability-circle-indicator"
                           style={{
                             left: `${prob * 100}%`,
-                            backgroundColor: getCircleColor(prob),
+                            
                           }}
                         ></div>
                       </div>

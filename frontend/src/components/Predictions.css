@@ -29,19 +29,17 @@
 .predictions-container {
   display: flex;
   height: calc(100vh - 160px);
-  margin: 10px; /* 10px margins around the container */
 }
 
 /* Left Panel */
 .left-panel {
-  flex: 1;
-  width: calc(50% - 20px); /* 50% minus margins */
-  height: 100%;
+  width: calc(50% - 20px); /* 50% width minus margins */
+  margin: 10px; /* 10px margins */
+  height: calc(100vh - 160px - 20px); /* Full height minus header and margins */
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden; /* Hide any image overflow */
-  margin-right: 10px; /* Space between left and right panels */
 }
 
 /* Image Preview */
@@ -59,18 +57,18 @@
 
 /* Right Panel */
 .right-panel {
-  flex: 1;
-  width: calc(50% - 20px); /* 50% minus margins */
-  height: 100%;
+  width: 50%; /* 50% width minus margins */
+  margin: 10px; /* 10px margins */
+  height: 100%; /* Full height minus header and margins */
+  padding: 0; /* Remove padding since we're using margins */
   display: flex;
   flex-direction: column;
-  margin-left: 10px; /* Space between left and right panels */
 }
 
 /* Top Boxes */
 .top-boxes {
   display: flex;
-  flex-direction: column; /* Stack boxes vertically */
+  flex-direction: row; /* Stack boxes vertically */
   margin-bottom: 20px;
 }
 
@@ -86,7 +84,7 @@
   box-sizing: border-box;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc; /* Grey border around each box */
-  margin-bottom: 15px; /* Space between boxes */
+  margin-bottom: 15px;
 
   /* Background Image Properties */
   background-size: cover;
@@ -231,7 +229,6 @@
   .predictions-container {
     flex-direction: column;
     height: auto;
-    margin: 10px; /* Maintain margins */
   }
 
   .left-panel,
@@ -239,7 +236,7 @@
     width: calc(100% - 20px); /* Full width minus margins */
     max-width: 100%;
     margin: 10px; /* 10px margins */
-    height: auto; /* Adjust height for responsiveness */
+    height: auto;
   }
 
   .top-boxes {

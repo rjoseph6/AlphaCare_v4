@@ -169,6 +169,13 @@ def predict():
         # Compute Uncertainty using Entropy
         uncertainty = round(float(entropy(probabilities, base=2)), 4)  # Entropy in bits
 
+        print("\n----------------- Prediction Results -----------------")
+        print(f"Predicted Class Index: {predicted_class_idx}")
+        print(f"Predicted Disease Name: {predicted_class_name}")
+        print(f"Predicted Probability: {predicted_probability}%")
+        print(f"Uncertainty: {uncertainty}")
+        print(f"Class Probabilities: {predictions}")
+        print("------------------------------------------------------\n")
         # Prepare the response
         response = {
             "predicted_class_index": int(predicted_class_idx),
