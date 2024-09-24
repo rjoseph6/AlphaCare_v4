@@ -26,13 +26,6 @@
 }
 
 /* Predictions container to hold left and right panels */
-/*
-.predictions-container {
-  display: flex;
-  flex-wrap: nowrap;
-  height: calc(100vh - 160px);
-}
-*/
 .predictions-container {
   display: grid;
   grid-template-columns: 1fr 1fr; /* Two equal columns */
@@ -41,21 +34,6 @@
   padding: 10px;
   box-sizing: border-box;
 }
-
-
-/*
-.left-panel {
-  flex: 0 0 calc(50% - 20px); 
-  margin: 10px;
-  height: calc(100vh - 160px - 20px);
-  box-sizing: border-box; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-*/
 
 .left-panel {
   background-color: #fff; /* Optional: set a background color */
@@ -71,13 +49,73 @@
 .image-preview {
   width: 100%;
   height: 100%;
+  position: relative;
+  overflow: hidden; /* Prevent image overflow when zoomed */
 }
 
-.image-preview img {
+/* Zoom Controls */
+.zoom-controls {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10; /* Ensure controls are above the image */
+}
+
+/* Zoom Buttons */
+.zoom-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Make buttons circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.zoom-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Hide Zoom Out Button Initially */
+.zoom-out {
+  display: none;
+}
+
+/* Show Zoom Out Button When Zoomed In */
+.left-panel .image-preview img {
+  /* Adjust styles if needed */
+}
+
+.left-panel .image-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* Fill the container, cropping if necessary */
   border-radius: 20px;
+  cursor: grab;
+  transition: transform 0.2s ease-in-out; /* Smooth transition when zoomed */
+}
+
+/* When scale > 1, show the zoom out button */
+.left-panel .image-preview img.scaled {
+  /* Optional: additional styles when scaled */
+}
+
+.zoom-out.visible {
+  display: flex;
+}
+
+/* Change cursor during drag */
+.image-preview img:active {
+  cursor: grabbing;
 }
 
 .right-panel {
@@ -87,22 +125,10 @@
   overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
-/* Right Panel */
-/*
-.right-panel {
-  flex: 0 0 calc(50% - 20px); 
-  margin: 10px; 
-  height: calc(100vh - 160px - 20px);
-  box-sizing: border-box;
-  padding: 0; 
-  display: flex;
-  flex-direction: column;
-}
-
 /* Top Boxes */
 .top-boxes {
   display: flex;
-  flex-direction: row; /* Stack boxes vertically */
+  flex-direction: row; /* Stack boxes horizontally */
   margin-bottom: 20px;
 }
 
@@ -260,20 +286,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  /*
-  .predictions-container {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .left-panel,
-  .right-panel {
-    width: calc(100% - 20px); 
-    max-width: 100%;
-    margin: 10px; 
-    height: auto;
-  }
-  */
   .predictions-container {
     grid-template-columns: 1fr; /* Single column layout */
     grid-gap: 10px;
@@ -290,7 +302,6 @@
     overflow-y: visible;
   }
 
-
   .top-boxes {
     flex-direction: column;
   }
@@ -300,23 +311,3 @@
     margin-bottom: 15px;
   }
 }
-/*
-  .prediction-item {
-    flex-direction: column;
-    align-items: flex-start;
-    height: auto;
-    padding: 10px;
-  }
-
-  .disease-name,
-  .probability-descriptor,
-  .probability-line-container {
-    width: 100%;
-    margin-bottom: 5px;
-  }
-
-  .probability-line-container {
-    margin-left: 0;
-  }
-}
-*/

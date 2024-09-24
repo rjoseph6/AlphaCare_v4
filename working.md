@@ -41,3 +41,18 @@ I switched it so that the right and left sides are compartmentalized. It does se
 ![](ui/working_v3b.png)
 
 ![](ui/working_v3c.png)
+
+
+## v4
+
+Date: September 24
+
+Time: 4:44 PM
+
+Added a zoom in and out feature. The zoom out feature only shows up once you have zoomed in. You can also drag the image around.
+
+![](ui/working_v4a.png)
+
+![](ui/working_v4b.png)
+
+![](ui/working_v4c.png)
