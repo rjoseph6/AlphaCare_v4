@@ -2,14 +2,15 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.optim.lr_scheduler import StepLR
 from torchvision import datasets, transforms, models
-from torch.utils.data import DataLoader, WeightedRandomSampler
+from torch.utils.data import DataLoader
 from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 from tqdm import tqdm  # For progress bars
+import copy
 
 # ------------------------------
 # Configuration
@@ -25,8 +26,8 @@ else:
 
 # Image parameters
 IMG_HEIGHT = 224  # Updated to 224 for ResNet
-IMG_WIDTH = 224  # Updated to 224 for ResNet
-BATCH_SIZE = 128   # Adjusted batch size for better GPU utilization
+IMG_WIDTH = 224   # Updated to 224 for ResNet
+BATCH_SIZE = 16   # Adjusted batch size for better GPU utilization
 NUM_CLASSES = 7   # Updated to 7 for all disease classes
 EPOCHS = 150
 
@@ -38,9 +39,21 @@ Train class counts: Counter({5: 5363, 4: 891, 2: 879, 1: 411, 0: 261, 6: 114, 3:
 Class weights: [4.384783798576902, 2.78449774070212, 1.3019665203965545, 12.43944099378882, 1.284431617764951, 0.21339335659678751, 10.038847117794486]
 '''
 
+class ResNet18WithDropout(nn.Module):
+    def __init__(self, num_classes=7, dropout_prob=0.5):
+        super(ResNet18WithDropout, self).__init__()
+        self.resnet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+        num_ftrs = self.resnet.fc.in_features
+        self.resnet.fc = nn.Sequential(
+            nn.Dropout(p=dropout_prob),
+            nn.Linear(num_ftrs, num_classes)
+        )
+    
+    def forward(self, x):
+        return self.resnet(x)
+
 def main():
     # Set paths to training, validation, and test directories
-    # Ensure these paths point to the directories with all 7 classes
     train_dir = '../datasets/ham10000_classified/train'
     validation_dir = '../datasets/ham10000_classified/val'
     test_dir = '../datasets/ham10000_classified/test'
@@ -56,9 +69,9 @@ def main():
             transforms.Resize((IMG_HEIGHT, IMG_WIDTH)),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
-            transforms.RandomRotation(60),
-            transforms.RandomResizedCrop(IMG_HEIGHT, scale=(0.6, 1.0)),
-            transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.4),
+            transforms.RandomRotation(20),
+            transforms.RandomResizedCrop(IMG_HEIGHT, scale=(0.8, 1.0)),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406],   # Mean for normalization
                                  [0.229, 0.224, 0.225])  # Std for normalization
@@ -101,41 +114,34 @@ def main():
             class_weight = 0  # Avoid division by zero
             print(f"Warning: Class {label} has zero samples in training data.")
         class_weights.append(class_weight)
-        #print(f"Class {label} count: {class_counts[label]}")
-        #print(f"Class {label} weight: {class_weight}")
     
     print(f"Class weights(normal): {class_weights}")
     # Convert class_weights to a tensor
     class_weights = torch.tensor(class_weights, dtype=torch.float).to(device)
     print(f"Class weights(torch): {class_weights}")
 
-
     # Data loaders with num_workers set to 0
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
     val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
 
-    # Load pre-trained ResNet-18 model and modify for multi-class classification
-    model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
-
-    num_ftrs = model.fc.in_features
-    # Replace the last layer with a multi-class classification layer
-    model.fc = nn.Linear(num_ftrs, NUM_CLASSES)
-    model = model.to(device)
+    # Initialize the model with dropout
+    model = ResNet18WithDropout(num_classes=NUM_CLASSES, dropout_prob=0.5).to(device)
 
     # Loss function and optimizer
     criterion = nn.CrossEntropyLoss(weight=class_weights)
-    # Weight decay (L2 regularization) helps prevent overfitting by penalizing large weights.
-    optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=1e-4)
-    scheduler = ReduceLROnPlateau(optimizer=optimizer,
-                                  factor=0.1,
-                                  mode='min',
-                                  patience=10)
+    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=1e-4)
+    scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
 
     # Training and validation loop
     train_losses, val_losses = [], []
     train_accuracies, val_accuracies = [], []
     learning_rates = []  # Initialize list to store learning rates
+
+    best_val_acc = 0.0
+    best_model_wts = copy.deepcopy(model.state_dict())
+    patience = 15
+    counter = 0
 
     for epoch in range(EPOCHS):
         print(f"\nEpoch {epoch+1}/{EPOCHS}")
@@ -173,7 +179,7 @@ def main():
             train_bar.set_postfix(loss=loss.item())
 
         epoch_loss = running_loss / len(train_dataset)
-        epoch_acc = correct.float() / len(train_dataset) 
+        epoch_acc = correct.float() / len(train_dataset)
         train_losses.append(epoch_loss)
         train_accuracies.append(epoch_acc.item())
         print(f"Training Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
@@ -212,22 +218,31 @@ def main():
         val_accuracies.append(val_epoch_acc.item())
         print(f"Validation Loss: {val_epoch_loss:.4f} Acc: {val_epoch_acc:.4f}")
 
-        # learning rate 
-        scheduler.step(val_epoch_loss)
-        current_lr = scheduler.get_last_lr()[0]
+        # Update the scheduler
+        scheduler.step()
+
+        # Get current learning rate
+        current_lr = optimizer.param_groups[0]['lr']
         print(f"Current Learning Rate: {current_lr}")
         learning_rates.append(current_lr)
 
-        # historical metrics
-        print("------------- HISTORY ------------")
-        print(f"Training Accuracies: {train_accuracies}\n")
-        print(f"Validation Accuracies: {val_accuracies}\n")
-        print(f"Training Losses: {train_losses}\n")
-        print(f"Validation Losses: {val_losses}\n")
-        print(f"Learning Rates: {learning_rates}")
-        print("------------- HISTORY ------------")
+        # Early Stopping
+        if val_epoch_acc > best_val_acc:
+            best_val_acc = val_epoch_acc
+            best_model_wts = copy.deepcopy(model.state_dict())
+            counter = 0
+            print("New best model found!")
+        else:
+            counter += 1
+            print(f"No improvement for {counter} epochs.")
+            if counter >= patience:
+                print("Early stopping triggered.")
+                break
 
     print("\nTraining complete.")
+
+    # Load best model weights
+    model.load_state_dict(best_model_wts)
 
     # Evaluate on test set
     model.eval()
@@ -292,8 +307,8 @@ def main():
 
     # Plot training & validation accuracy values
     plt.figure(figsize=(8, 4))
-    plt.plot(range(1, EPOCHS+1), train_accuracies, label='Train')
-    plt.plot(range(1, EPOCHS+1), val_accuracies, label='Validation')
+    plt.plot(range(1, len(train_accuracies)+1), train_accuracies, label='Train')
+    plt.plot(range(1, len(val_accuracies)+1), val_accuracies, label='Validation')
     plt.title('Model Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
@@ -303,8 +318,8 @@ def main():
 
     # Plot training & validation loss values
     plt.figure(figsize=(8, 4))
-    plt.plot(range(1, EPOCHS+1), train_losses, label='Train')
-    plt.plot(range(1, EPOCHS+1), val_losses, label='Validation')
+    plt.plot(range(1, len(train_losses)+1), train_losses, label='Train')
+    plt.plot(range(1, len(val_losses)+1), val_losses, label='Validation')
     plt.title('Model Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
@@ -312,25 +327,23 @@ def main():
     plt.savefig('model_loss.png')
     #plt.show()
 
-
     # Plot learning rate over epochs
     plt.figure(figsize=(8, 4))
-    plt.plot(range(1, EPOCHS+1), learning_rates, marker='o', label='Learning Rate')
+    plt.plot(range(1, len(learning_rates)+1), learning_rates, marker='o', label='Learning Rate')
     plt.title('Learning Rate Over Epochs')
     plt.xlabel('Epoch')
     plt.ylabel('Learning Rate')
-    plt.xticks(range(1, EPOCHS+1))
+    plt.xticks(range(1, len(learning_rates)+1))
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
     plt.savefig('learning_rate.png')
     #plt.show()
 
-
     # Save the trained model
     os.makedirs('../weights', exist_ok=True)
-    torch.save(model.state_dict(), '../weights/resnet18_ham10000_7classes_25epochs.pth')
-    print("Model saved to '../weights/resnet18_ham10000_7classes_25epochs.pth'")
+    torch.save(model.state_dict(), '../weights/resnet18_ham10000_7classes_best.pth')
+    print("Best model saved to '../weights/resnet18_ham10000_7classes_best.pth'")
 
 if __name__ == '__main__':
     main()
