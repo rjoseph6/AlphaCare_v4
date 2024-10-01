@@ -86,8 +86,8 @@ def load_model(model_path, num_classes):
 # =========================
 print("Loading the 7-class ResNet-18 model...")
 
-#model_path = '../weights/resnet18_ham10000_7classes.pth'
-model_path = '../weights/#resnet18_ham10000_7classes_25epochs.pth' # better trained model
+model_path = '../weights/resnet18_ham10000_7classes.pth'
+#model_path = '../weights/resnet18_ham10000_7classes_25epochs.pth' # better trained model
 
 # Check if the model file exists
 if not os.path.exists(model_path):
